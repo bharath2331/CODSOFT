@@ -11,93 +11,81 @@ struct Task {
     Task(const string& desc) : description(desc), completed(false) {}
 };
 
-class TaskManager {
-private:
-    vector<Task> tasks;
-
-public:
-    void addTask(const string& taskDescription) {
-        tasks.push_back(Task(taskDescription));
-        cout << "Task added: " << taskDescription << endl;
+void displayTasks(const vector<Task>& tasks) {
+    cout << "To-Do List:" << endl;
+    for (size_t i = 0; i < tasks.size(); i++) {
+        cout << i + 1 << ". " << (tasks[i].completed ? "[X] " : "[ ] ") << tasks[i].description << endl;
     }
+}
 
-    void viewTasks() {
-        if (tasks.empty()) {
-            cout << "No tasks to display." << endl;
-            return;
-        }
+void addTask(vector<Task>& tasks, const string& description) {
+    tasks.push_back(Task(description));
+    cout << "Task added: " << description << endl;
+}
 
-        cout << "Tasks:" << endl;
-        for (size_t i = 0; i < tasks.size(); ++i) {
-            const Task& task = tasks[i];
-            cout << i + 1 << ". " << task.description << " - " << (task.completed ? "Completed" : "Pending") << endl;
-        }
+void completeTask(vector<Task>& tasks, size_t index) {
+    if (index >= 0 && index < tasks.size()) {
+        tasks[index].completed = true;
+        cout << "Task completed: " << tasks[index].description << endl;
+    } else {
+        cout << "Invalid task index." << endl;
     }
+}
 
-    void markTaskCompleted(int taskIndex) {
-        if (taskIndex >= 0 && taskIndex < static_cast<int>(tasks.size())) {
-            tasks[taskIndex].completed = true;
-            cout << "Task marked as completed: " << tasks[taskIndex].description << endl;
-        } else {
-            cout << "Invalid task index." << endl;
-        }
+void removeTask(vector<Task>& tasks, size_t index) {
+    if (index >= 0 && index < tasks.size()) {
+        cout << "Task removed: " << tasks[index].description << endl;
+        tasks.erase(tasks.begin() + index);
+    } else {
+        cout << "Invalid task index." << endl;
     }
-
-    void removeTask(int taskIndex) {
-        if (taskIndex >= 0 && taskIndex < static_cast<int>(tasks.size())) {
-            cout << "Task removed: " << tasks[taskIndex].description << endl;
-            tasks.erase(tasks.begin() + taskIndex);
-        } else {
-            cout << "Invalid task index." << endl;
-        }
-    }
-};
+}
 
 int main() {
-    TaskManager taskManager;
+    vector<Task> tasks;
+    int choice;
 
     while (true) {
-        cout << "\nOptions:" << endl;
-        cout << "1. Add Task" << endl;
-        cout << "2. View Tasks" << endl;
-        cout << "3. Mark Task as Completed" << endl;
+        cout << "To-Do List Application" << endl;
+        cout << "1. Display Tasks" << endl;
+        cout << "2. Add Task" << endl;
+        cout << "3. Complete Task" << endl;
         cout << "4. Remove Task" << endl;
         cout << "5. Quit" << endl;
-
-        int choice;
         cout << "Enter your choice: ";
         cin >> choice;
 
         switch (choice) {
             case 1:
-                {
-                    string taskDescription;
-                    cout << "Enter the task: ";
-                    cin.ignore(); // Clear the newline character from the previous input
-                    getline(cin, taskDescription);
-                    taskManager.addTask(taskDescription);
-                }
+                displayTasks(tasks);
                 break;
-            case 2:
-                taskManager.viewTasks();
+            case 2: {
+                cin.ignore(); 
+                cout << "Enter task description: ";
+                string description;
+                getline(cin, description);
+                addTask(tasks, description);
                 break;
-            case 3:
-                int taskIndex;
-                cout << "Enter the task index to mark as completed: ";
-                cin >> taskIndex;
-                taskManager.markTaskCompleted(taskIndex - 1);
+            }
+            case 3: {
+                size_t index;
+                cout << "Enter the task number to mark as completed: ";
+                cin >> index;
+                completeTask(tasks, index - 1);
                 break;
-            case 4:
-                int removeIndex;
-                cout << "Enter the task index to remove: ";
-                cin >> removeIndex;
-                taskManager.removeTask(removeIndex - 1);
+            }
+            case 4: {
+                size_t index;
+                cout << "Enter the task number to remove: ";
+                cin >> index;
+                removeTask(tasks, index - 1);
                 break;
+            }
             case 5:
+                cout << "closing " << endl;
                 return 0;
             default:
                 cout << "Invalid choice. Please try again." << endl;
-                break;
         }
     }
 
