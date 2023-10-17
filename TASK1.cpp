@@ -2,31 +2,48 @@
 #include <cstdlib>
 #include <ctime>
 
-int main() {
-    // Seed the random number generator with the current time
-    srand(time(0));
+using namespace std;
 
-    // Generate a random number between 1 and 100
-    int randomNumber = rand() % 100 + 1;
-    
-    int userGuess;
+int generateRandomNumber(int min, int max) {
+    return rand() % (max - min + 1) + min;
+}
+
+void playGame() {
+    int minRange = 1;
+    int maxRange = 100;
+    int secretNumber = generateRandomNumber(minRange, maxRange);
     int attempts = 0;
+    int guess;
 
-    std::cout << "Welcome to the Guess the Number game!\n";
-    
+    cout << "Welcome to the Number Guessing Game!" << endl;
+    cout << "I'm thinking of a number between " << minRange << " and " << maxRange << endl;
+
     do {
-        std::cout << "Guess the number (between 1 and 100): ";
-        std::cin >> userGuess;
+        cout << "Enter your guess: ";
+        cin >> guess;
         attempts++;
 
-        if (userGuess < randomNumber) {
-            std::cout << "Too low! Try again.\n";
-        } else if (userGuess > randomNumber) {
-            std::cout << "Too high! Try again.\n";
+        if (guess < secretNumber) {
+            cout << "Too low! Try again." << endl;
+        } else if (guess > secretNumber) {
+            cout << "Too high! Try again." << endl;
         } else {
-            std::cout << "Congratulations! You guessed the number " << randomNumber << " in " << attempts << " attempts!\n";
+            cout << "Congratulations! You've guessed the number (" << secretNumber << ") in " << attempts << " attempts!" << endl;
         }
-    } while (userGuess != randomNumber);
+    } while (guess != secretNumber);
+}
+
+int main() {
+    srand(time(0)); 
+    char playAgain;
+
+    do {
+        playGame();
+        cout << "Do you want to play again? (y/n): ";
+        cin >> playAgain;
+    } while (playAgain == 'y' || playAgain == 'Y');
+
+    cout << "Thanks for playing! Goodbye!" << endl;
 
     return 0;
 }
